@@ -141,7 +141,7 @@ Or:
 
     @set 'view engine': 'jade'
     
-> 0.3 upgrade note: `@`/`params` variables are not longer automatically exports
+> 0.3 upgrade note: `@`/`params` variables are no longer automatically exported
 > to your views.
 
 The issue here is that `@` is now the namespace for all the internal zappa stuff, so it can't just be exposed to your views without unexpected consequences.  So you need to explicitly choose what to expose.
