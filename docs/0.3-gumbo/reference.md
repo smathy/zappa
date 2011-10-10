@@ -141,11 +141,56 @@ Or:
 
     @set 'view engine': 'jade'
     
-All variables at `@`/`params` (request params + those you created) are automatically made available to templates as `params.foo` (in CoffeeKup, `@params.foo`).
+> 0.3 upgrade note: `@`/`params` variables are not longer automatically exports
+> to your views.
 
-In addition, if you're using the *zappa view adapter* (as is the case by default, with CoffeeKup), they're also made available at the template's "root namespace" (`foo` or CoffeeKup's `@foo`).
+The issue here is that `@` is now the namespace for all the internal zappa stuff, so it can't just be exposed to your views without unexpected consequences.  So you need to explicitly choose what to expose.
+
+You have three options to expose your variables to your views.
+
+#### 1. List them explicitly in your render call:
+
+    @enable 'default layout'
+
+    @get '/:foo': ->
+      @render 'foo', foo: @params.foo, bar: 'bar'
+
+    @view foo: ->
+      p @foo
+      p @bar
+
+#### 2. Use the handler's argument for zappa's `this` (allowing your own data to use `@`):
+
+    @enable 'default layout'
+    @set databag: 'this'
+
+    @get '/:foo': (z) ->
+      @bar = 'bar'
+      z.render 'foo'
+
+    @view foo: ->
+      p @foo
+      p @bar
+
+
+#### 3. Use the handler's argument for the params and your data:
+
+    @enable 'default layout'
+    @set databag: 'param'
+
+    @get '/:foo': (c) ->
+      c.bar = 'bar'
+      @render 'foo'
+
+    @view foo: ->
+      p @foo
+      p @bar
+
+As you can see both options 2 and 3 allow the request params to be auto-assigned to `@` vars in CoffeeKup and plain vars in other template engines.
 
 Since in express templating data is usually mixed up with framework locals and template options, the adapter will only put variables in the template root if there isn't a variable there with the same name already, *and* the name is not blacklisted.
+
+#### TODO: fix the require so the below works
 
 To use this feature with other templating engines:
 

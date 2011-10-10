@@ -19,11 +19,11 @@ Data importing
   - `@get '/:foo': -> @render @params.foo`
   - `@get '/:foo': (c) -> @render c.params.foo`
   - `@set databag: 'param'; @get '/:foo': (d) -> @render d.foo`
-  - `@set databag: 'context'; @get '/:foo': (c) -> c.render @foo`
+  - `@set databag: 'this'; @get '/:foo': (c) -> c.render @foo`
   
 Data exporting
 
 - Change `get '/': -> @foo = 'bar'; render 'index'` to one of these alternatives:
   - `@get '/': -> @render index: {foo: 'bar'}`
   - `@set databag: 'param'; @get '/': (d) -> d.foo = 'bar'; @render 'index'`
-  - `@set databag: 'context'; @get '/': (c) -> @foo = 'bar'; c.render 'index'`
+  - `@set databag: 'this'; @get '/': (c) -> @foo = 'bar'; c.render 'index'`
